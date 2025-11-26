@@ -1100,6 +1100,16 @@
 
         // Chatbot functionality
         let conversationHistory = [];
+        const systemPrompt = `Eres el asistente virtual de AO Tech Solutions, una empresa de soluciones tecnológicas que ofrece: 
+
+- Desarrollo Web: sitios web modernos, responsive y optimizados
+- Apps Móviles: aplicaciones nativas y multiplataforma
+- Cloud Solutions: migración y optimización en AWS, Azure, Google Cloud
+- IA & Automatización: soluciones de inteligencia artificial y automatización de procesos
+- Ciberseguridad: protección de activos digitales y auditorías
+- Consultoría Tech: asesoría en estrategia digital y transformación tecnológica
+
+Responde de manera amigable, profesional y concisa (máximo 2-3 oraciones). Si preguntan por contacto, menciona contacto@aotechsolutions.com o el formulario de la página.`;
         
         function toggleChatbot() {
             const chatbotWindow = document.getElementById('chatbotWindow');
@@ -1122,37 +1132,41 @@
             
             if (!message) return;
             
-            // Add user message
+            // Add user message to UI
             addMessage(message, 'user');
             input.value = '';
-            
-            // Add to conversation history
-            conversationHistory.push({
-                role: 'user',
-                content: message
-            });
             
             // Show typing indicator
             showTypingIndicator();
             
-            // Simulate AI response with Claude API
             try {
-                // Build messages array with system context and full history
-                const messages = [
-                    {
-                        role: 'user',
-                        content: `Eres el asistente virtual de AO Tech Solutions, una empresa de soluciones tecnológicas que ofrece: Desarrollo Web, Apps Móviles, Cloud Solutions, IA & Automatización, Ciberseguridad y Consultoría Tech. 
-
-Responde de manera amigable, profesional y concisa (máximo 2-3 oraciones). Si preguntan por servicios específicos, menciona brevemente lo que ofrecemos. Si preguntan por contacto, invítalos a usar el formulario en la página o escribir a contacto@aotechsolutions.com
-
-Mantén el contexto de la conversación anterior. Aquí está el historial completo de la conversación:`
-                    }
-                ];
+                // Build messages array properly
+                const messages = [];
                 
-                // Add all conversation history
-                conversationHistory.forEach(msg => {
-                    messages.push(msg);
-                });
+                // First message includes system prompt
+                if (conversationHistory.length === 0) {
+                    messages.push({
+                        role: 'user',
+                        content: systemPrompt + '\n\nUsuario: ' + message
+                    });
+                } else {
+                    // Add system prompt to first message
+                    messages.push({
+                        role: 'user',
+                        content: systemPrompt + '\n\nHistorial de conversación:'
+                    });
+                    
+                    // Add conversation history
+                    conversationHistory.forEach(msg => {
+                        messages.push(msg);
+                    });
+                    
+                    // Add current message
+                    messages.push({
+                        role: 'user',
+                        content: message
+                    });
+                }
                 
                 const response = await fetch('https://api.anthropic.com/v1/messages', {
                     method: 'POST',
@@ -1166,10 +1180,18 @@ Mantén el contexto de la conversación anterior. Aquí está el historial compl
                     })
                 });
                 
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
                 const data = await response.json();
                 const botResponse = data.content[0].text;
                 
-                // Add bot response to history
+                // Add to conversation history
+                conversationHistory.push({
+                    role: 'user',
+                    content: message
+                });
                 conversationHistory.push({
                     role: 'assistant',
                     content: botResponse
@@ -1179,9 +1201,45 @@ Mantén el contexto de la conversación anterior. Aquí está el historial compl
                 addMessage(botResponse, 'bot');
                 
             } catch (error) {
-                console.error('Error:', error);
+                console.error('Error completo:', error);
                 hideTypingIndicator();
-                addMessage('Disculpa, estoy teniendo problemas técnicos. ¿Podrías intentarlo de nuevo?', 'bot');
+                
+                // Fallback responses
+                const fallbackResponse = getFallbackResponse(message);
+                addMessage(fallbackResponse, 'bot');
+                
+                conversationHistory.push({
+                    role: 'user',
+                    content: message
+                });
+                conversationHistory.push({
+                    role: 'assistant',
+                    content: fallbackResponse
+                });
+            }
+        }
+        
+        function getFallbackResponse(message) {
+            const lowerMessage = message.toLowerCase();
+            
+            if (lowerMessage.includes('cloud') || lowerMessage.includes('nube')) {
+                return 'Nuestro servicio de Cloud Solutions incluye migración y optimización de infraestructura en AWS, Azure y Google Cloud. ¿Te gustaría saber sobre algún proveedor específico?';
+            } else if (lowerMessage.includes('web') || lowerMessage.includes('sitio')) {
+                return 'Creamos sitios web modernos, responsive y optimizados usando las últimas tecnologías. Desde landing pages hasta aplicaciones web complejas. ¿Qué tipo de proyecto tienes en mente?';
+            } else if (lowerMessage.includes('app') || lowerMessage.includes('móvil')) {
+                return 'Desarrollamos apps móviles nativas y multiplataforma que conectan tu negocio con millones de usuarios. ¿Para qué plataforma necesitas tu app?';
+            } else if (lowerMessage.includes('ia') || lowerMessage.includes('inteligencia')) {
+                return 'Implementamos soluciones de IA y automatización para aumentar la eficiencia operativa. Desde chatbots hasta análisis predictivo. ¿Qué proceso te gustaría automatizar?';
+            } else if (lowerMessage.includes('seguridad') || lowerMessage.includes('ciber')) {
+                return 'Protegemos tus activos digitales con auditorías de vulnerabilidades y mejores prácticas de seguridad. ¿Necesitas una auditoría de seguridad?';
+            } else if (lowerMessage.includes('consultoría') || lowerMessage.includes('asesor')) {
+                return 'Ofrecemos consultoría en estrategia digital, transformación tecnológica y optimización de procesos. ¿En qué área necesitas asesoría?';
+            } else if (lowerMessage.includes('precio') || lowerMessage.includes('costo') || lowerMessage.includes('cotiz')) {
+                return 'Nuestros precios son personalizados según las necesidades de cada proyecto. Puedes contactarnos en contacto@aotechsolutions.com para una cotización detallada.';
+            } else if (lowerMessage.includes('contacto') || lowerMessage.includes('contactar')) {
+                return 'Puedes contactarnos llenando el formulario en esta página o escribiendo a contacto@aotechsolutions.com. ¡Respondemos en menos de 24 horas!';
+            } else {
+                return 'Gracias por tu interés. Para más información específica sobre nuestros servicios, puedes contactarnos a contacto@aotechsolutions.com o llenar el formulario de contacto. ¿Hay algo más en lo que pueda ayudarte?';
             }
         }
 
