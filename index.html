@@ -1099,6 +1099,8 @@
         }
 
         // Chatbot functionality
+        let conversationHistory = [];
+        
         function toggleChatbot() {
             const chatbotWindow = document.getElementById('chatbotWindow');
             chatbotWindow.classList.toggle('active');
@@ -1124,11 +1126,34 @@
             addMessage(message, 'user');
             input.value = '';
             
+            // Add to conversation history
+            conversationHistory.push({
+                role: 'user',
+                content: message
+            });
+            
             // Show typing indicator
             showTypingIndicator();
             
             // Simulate AI response with Claude API
             try {
+                // Build messages array with system context and full history
+                const messages = [
+                    {
+                        role: 'user',
+                        content: `Eres el asistente virtual de AO Tech Solutions, una empresa de soluciones tecnológicas que ofrece: Desarrollo Web, Apps Móviles, Cloud Solutions, IA & Automatización, Ciberseguridad y Consultoría Tech. 
+
+Responde de manera amigable, profesional y concisa (máximo 2-3 oraciones). Si preguntan por servicios específicos, menciona brevemente lo que ofrecemos. Si preguntan por contacto, invítalos a usar el formulario en la página o escribir a contacto@aotechsolutions.com
+
+Mantén el contexto de la conversación anterior. Aquí está el historial completo de la conversación:`
+                    }
+                ];
+                
+                // Add all conversation history
+                conversationHistory.forEach(msg => {
+                    messages.push(msg);
+                });
+                
                 const response = await fetch('https://api.anthropic.com/v1/messages', {
                     method: 'POST',
                     headers: {
@@ -1137,19 +1162,18 @@
                     body: JSON.stringify({
                         model: 'claude-sonnet-4-20250514',
                         max_tokens: 300,
-                        messages: [{
-                            role: 'user',
-                            content: `Eres el asistente virtual de AO Tech Solutions, una empresa de soluciones tecnológicas que ofrece: Desarrollo Web, Apps Móviles, Cloud Solutions, IA & Automatización, Ciberseguridad y Consultoría Tech. 
-
-Responde de manera amigable, profesional y concisa (máximo 2-3 oraciones). Si preguntan por servicios específicos, menciona brevemente lo que ofrecemos. Si preguntan por contacto, invítalos a usar el formulario en la página o escribir a contacto@aotechsolutions.com
-
-Pregunta del usuario: ${message}`
-                        }]
+                        messages: messages
                     })
                 });
                 
                 const data = await response.json();
                 const botResponse = data.content[0].text;
+                
+                // Add bot response to history
+                conversationHistory.push({
+                    role: 'assistant',
+                    content: botResponse
+                });
                 
                 hideTypingIndicator();
                 addMessage(botResponse, 'bot');
