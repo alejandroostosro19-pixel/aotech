@@ -1040,15 +1040,23 @@
             }
 
             /* Timeline responsive */
+            .timeline-section {
+                padding: 4rem 5%;
+            }
+
             .timeline-line {
-                left: 40px;
+                left: 30px;
+            }
+
+            .timeline-container {
+                margin: 3rem auto 2rem;
             }
 
             .timeline-item,
             .timeline-item-right {
-                grid-template-columns: 80px 1fr;
-                gap: 2rem;
-                margin-bottom: 4rem;
+                grid-template-columns: 60px 1fr;
+                gap: 1.5rem;
+                margin-bottom: 3rem;
             }
 
             .timeline-item .timeline-content,
@@ -1060,10 +1068,15 @@
             .timeline-dot {
                 width: 60px;
                 height: 60px;
+                grid-column: 1;
             }
 
             .timeline-number {
                 font-size: 1.5rem;
+            }
+
+            .timeline-content {
+                padding: 1.5rem;
             }
 
             .timeline-content::before {
@@ -1071,11 +1084,33 @@
             }
 
             .timeline-icon {
-                font-size: 2rem;
+                font-size: 2.5rem;
+                margin-bottom: 0.8rem;
             }
 
             .timeline-title {
-                font-size: 1.4rem;
+                font-size: 1.3rem;
+                margin-bottom: 0.8rem;
+            }
+
+            .timeline-description {
+                font-size: 0.95rem;
+                line-height: 1.6;
+                margin-bottom: 1rem;
+            }
+
+            .timeline-duration {
+                font-size: 0.85rem;
+                padding: 0.4rem 1rem;
+            }
+
+            .timeline-cta {
+                margin-top: 2rem;
+            }
+
+            .cta-button {
+                padding: 1rem 2rem;
+                font-size: 1rem;
             }
         }
 
