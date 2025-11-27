@@ -265,6 +265,101 @@
             position: relative;
         }
 
+        /* Announcement Card */
+        .timeline-announcement {
+            max-width: 600px;
+            margin: 0 auto 5rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent-dim) 100%);
+            padding: 3rem 2rem;
+            border-radius: 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 255, 209, 0.4);
+            border: 3px solid var(--accent);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                box-shadow: 0 20px 60px rgba(0, 255, 209, 0.4);
+                transform: scale(1);
+            }
+            50% {
+                box-shadow: 0 25px 70px rgba(0, 255, 209, 0.6);
+                transform: scale(1.02);
+            }
+        }
+
+        .timeline-announcement::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0, 255, 209, 0.1) 0%, transparent 70%);
+            animation: rotate 10s linear infinite;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .announcement-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            animation: bounce 1.5s ease-in-out infinite;
+            position: relative;
+            z-index: 1;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .announcement-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            position: relative;
+            z-index: 1;
+            letter-spacing: 2px;
+        }
+
+        .announcement-subtitle {
+            font-size: 1.5rem;
+            color: white;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .announcement-features {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            position: relative;
+            z-index: 1;
+        }
+
+        .announcement-tag {
+            background: white;
+            color: var(--primary);
+            padding: 0.6rem 1.2rem;
+            border-radius: 25px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
         .timeline-line {
             position: absolute;
             left: 50%;
@@ -1041,42 +1136,81 @@
 
             /* Timeline responsive */
             .timeline-section {
-                padding: 4rem 5%;
+                padding: 3rem 5%;
             }
 
-            .timeline-line {
-                left: 30px;
+            .section-title {
+                font-size: 2.5rem;
+            }
+
+            .section-description {
+                font-size: 1rem;
+                margin: 1.5rem auto 3rem;
+                padding: 0 1rem;
             }
 
             .timeline-container {
-                margin: 3rem auto 2rem;
+                margin: 2rem 0;
+            }
+
+            /* Announcement Card Mobile */
+            .timeline-announcement {
+                padding: 2rem 1.5rem;
+                margin: 0 0 3rem 0;
+            }
+
+            .announcement-icon {
+                font-size: 3rem;
+                margin-bottom: 0.8rem;
+            }
+
+            .announcement-title {
+                font-size: 1.8rem;
+                letter-spacing: 1px;
+            }
+
+            .announcement-subtitle {
+                font-size: 1.2rem;
+                margin-bottom: 1.2rem;
+            }
+
+            .announcement-features {
+                flex-direction: column;
+                gap: 0.8rem;
+            }
+
+            .announcement-tag {
+                font-size: 0.85rem;
+                padding: 0.5rem 1rem;
+            }
+
+            .timeline-line {
+                display: none;
             }
 
             .timeline-item,
             .timeline-item-right {
-                grid-template-columns: 60px 1fr;
-                gap: 1.5rem;
-                margin-bottom: 3rem;
-            }
-
-            .timeline-item .timeline-content,
-            .timeline-item-right .timeline-content {
-                grid-column: 2;
-                text-align: left;
+                display: block;
+                margin-bottom: 2rem;
             }
 
             .timeline-dot {
-                width: 60px;
-                height: 60px;
-                grid-column: 1;
+                width: 50px;
+                height: 50px;
+                margin: 0 auto 1rem;
+                position: relative;
+                left: 0;
+                transform: none;
             }
 
             .timeline-number {
-                font-size: 1.5rem;
+                font-size: 1.3rem;
             }
 
             .timeline-content {
                 padding: 1.5rem;
+                text-align: center;
+                margin: 0;
             }
 
             .timeline-content::before {
@@ -1085,22 +1219,23 @@
 
             .timeline-icon {
                 font-size: 2.5rem;
-                margin-bottom: 0.8rem;
+                margin-bottom: 0.5rem;
             }
 
             .timeline-title {
-                font-size: 1.3rem;
+                font-size: 1.2rem;
                 margin-bottom: 0.8rem;
             }
 
             .timeline-description {
-                font-size: 0.95rem;
-                line-height: 1.6;
+                font-size: 0.9rem;
+                line-height: 1.5;
                 margin-bottom: 1rem;
+                text-align: left;
             }
 
             .timeline-duration {
-                font-size: 0.85rem;
+                font-size: 0.75rem;
                 padding: 0.4rem 1rem;
             }
 
@@ -1110,7 +1245,9 @@
 
             .cta-button {
                 padding: 1rem 2rem;
-                font-size: 1rem;
+                font-size: 0.9rem;
+                width: 100%;
+                max-width: 300px;
             }
         }
 
@@ -1223,6 +1360,18 @@
 
         <div class="timeline-container">
             <div class="timeline-line"></div>
+
+            <!-- Announcement Card -->
+            <div class="timeline-announcement">
+                <div class="announcement-icon">⚡</div>
+                <h3 class="announcement-title">¡TU PÁGINA WEB LISTA!</h3>
+                <p class="announcement-subtitle">En menos de una semana</p>
+                <div class="announcement-features">
+                    <span class="announcement-tag">✓ Diseño Profesional</span>
+                    <span class="announcement-tag">✓ Chatbot IA</span>
+                    <span class="announcement-tag">✓ 100% Responsive</span>
+                </div>
+            </div>
 
             <div class="timeline-item reveal" data-step="1">
                 <div class="timeline-dot">
