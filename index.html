@@ -44,6 +44,7 @@
             background-size: 60px 60px;
             z-index: 0;
             animation: gridMove 20s linear infinite;
+            pointer-events: none;
         }
 
         @keyframes gridMove {
@@ -719,6 +720,8 @@
             color: var(--bg);
             padding: 3rem 5%;
             text-align: center;
+            position: relative;
+            z-index: 10;
         }
 
         .footer-logo {
@@ -753,6 +756,10 @@
             color: var(--accent);
             transition: all 0.3s;
             background: transparent;
+            position: relative;
+            z-index: 20;
+            cursor: pointer;
+            text-decoration: none;
         }
 
         .social-link:hover {
